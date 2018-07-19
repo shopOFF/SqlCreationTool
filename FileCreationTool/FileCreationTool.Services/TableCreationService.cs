@@ -19,30 +19,8 @@ namespace FileCreationTool.Services
             this.sQLFileCreationService = sQLFileCreationService;
         }
 
-        public List<dynamic> ReadExcel(string filePath, string excelSheetName)
-        {
-            XSSFWorkbook workbook;
 
-            using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            {
-                workbook = new XSSFWorkbook(file);
-            }
-
-            ISheet sheet = workbook.GetSheet(excelSheetName);
-            var list = new List<dynamic>();
-
-            for (int row = 0; row <= sheet.LastRowNum; row++)
-            {
-                if (sheet.GetRow(row) != null) //null is when the row only contains empty cells 
-                {
-                    list.Add(sheet.GetRow(row).ToList<dynamic>());
-                }
-            }
-
-            return list;
-        }
-
-        public void CreateSQL(IList<dynamic> data, CompanyModel companyModel)
+        public void CreateTableSQL(string filePath, IList<dynamic> data, CompanyModel companyModel)
         {
             var company = companyModel.CompanyName;
             var table = companyModel.TableName;
@@ -62,7 +40,10 @@ namespace FileCreationTool.Services
 
                 var oraDataLength = (!string.IsNullOrEmpty(row[9].ToString()) ? row[9] : 100);
 
-                sb.AppendLine($"    {row[6].ToString().PadRight(30)}    varchar2({oraDataLength}),");
+                if (!string.IsNullOrEmpty(row[6].ToString()))
+                {
+                    sb.AppendLine($"    {row[6].ToString().PadRight(30)}    varchar2({oraDataLength}),");
+                }
             }
 
             sb.AppendLine($"    constraint df_{company}_{table}_pk primary key (object_id),");
@@ -105,6 +86,8 @@ namespace FileCreationTool.Services
             sb.AppendLine($"    delete from rules_hazard_attributes where hazard_rule_id = v_hazard_rule_id and attribute_id not in (select attribute_id from acs_attributes);");
             sb.AppendLine();
 
+            int groupCount = 1;
+
             for (int i = 1; i < data.Count; i++)
             {
                 var row = data[i];
@@ -115,6 +98,14 @@ namespace FileCreationTool.Services
                 var dataType = row[10];
                 var minValue = row[11];
                 var maxValue = row[12];
+
+                if (string.IsNullOrEmpty(attribute))  // check if this is a group
+                {
+                    attribute = $"groupby{groupCount++}";
+                    dataType = "groupby";
+                    minValue = 0;
+                    maxValue = 1;
+                }
 
                 sb.AppendLine();
                 sb.AppendLine("    -- ***************************************************");
@@ -142,41 +133,44 @@ namespace FileCreationTool.Services
                 sb.AppendLine($"        (v_attribute_id, 'simple', 'f', '{requiredInput}');");
 
 
-                if (dataType.StringCellValue == "enumeration")
+                if (!attribute.Contains("group"))
                 {
-                    var enums = row[13].StringCellValue.Split(";", StringSplitOptions.RemoveEmptyEntries);
-                    var enumsDispl = row[14].StringCellValue.Split(";", StringSplitOptions.RemoveEmptyEntries);
-
-                    for (int j = 0; j < enums.Length; j++)
+                    if (dataType.StringCellValue == "enumeration")
                     {
-                        sb.AppendLine();
-                        sb.AppendLine("    -- Enumeration Value");
-                        sb.AppendLine("    select enum_seq.nextval into v_enum_id from dual;");
-                        sb.AppendLine();
-                        sb.AppendLine($"    insert into acs_enum_values");
-                        sb.AppendLine($"        (attribute_id, enum_value, pretty_name, sort_order, enum_id)");
-                        sb.AppendLine($"    values");
-                        sb.AppendLine($"        (v_attribute_id, '{enums[j].ToString().Trim()}', '{enumsDispl[j].ToString().Trim()}', {(j + 1) * 10}, v_enum_id);");
-                        sb.AppendLine();
-                        sb.AppendLine($"    insert into display_enum_values");
-                        sb.AppendLine($"        (attribute_id, enum_value, pretty_name, sort_order, visible_p, abbv_name, color, enum_id)");
-                        sb.AppendLine($"    values");
-                        sb.AppendLine($"        (v_attribute_id, '{enums[j].ToString().Trim()}', '{enumsDispl[j].ToString().Trim()}', {(j + 1) * 10}, 't', '', '', v_enum_id);");
-                    }
+                        var enums = row[13].StringCellValue.Split(";", StringSplitOptions.RemoveEmptyEntries);
+                        var enumsDispl = row[14].StringCellValue.Split(";", StringSplitOptions.RemoveEmptyEntries);
 
-                    // THE HAZARD MUST CONTAIN THE - (DASH SYMBOL) IN THE TEMPLATE 
-                    if (row[2].CellType == CellType.Numeric)
-                    {
-                        sb.AppendLine();
-                        sb.AppendLine("    -- Hazards");
-                        var hazards = row[1].StringCellValue.Split(";", StringSplitOptions.RemoveEmptyEntries);
-
-                        foreach (var hazard in hazards)
+                        for (int j = 0; j < enums.Length; j++)
                         {
-                            if (hazard.Contains("-")) // THE HAZARD MUST CONTAIN THE - (DASH SYMBOL) IN THE TEMPLATE 
+                            sb.AppendLine();
+                            sb.AppendLine("    -- Enumeration Value");
+                            sb.AppendLine("    select enum_seq.nextval into v_enum_id from dual;");
+                            sb.AppendLine();
+                            sb.AppendLine($"    insert into acs_enum_values");
+                            sb.AppendLine($"        (attribute_id, enum_value, pretty_name, sort_order, enum_id)");
+                            sb.AppendLine($"    values");
+                            sb.AppendLine($"        (v_attribute_id, '{enums[j].ToString().Replace("-", "").Trim()}', '{enumsDispl[j].ToString().Trim()}', {(j + 1) * 10}, v_enum_id);");
+                            sb.AppendLine();
+                            sb.AppendLine($"    insert into display_enum_values");
+                            sb.AppendLine($"        (attribute_id, enum_value, pretty_name, sort_order, visible_p, abbv_name, color, enum_id)");
+                            sb.AppendLine($"    values");
+                            sb.AppendLine($"        (v_attribute_id, '{enums[j].ToString().Replace("-", "").Trim()}', '{enumsDispl[j].ToString().Trim()}', {(j + 1) * 10}, 't', '', '', v_enum_id);");
+                        }
+
+                        // THE HAZARD MUST CONTAIN THE - (DASH SYMBOL) IN THE TEMPLATE (ENUMERATION) values -- thats  COLUMN 14(row[13] in this case)
+                        if (row[2].CellType == CellType.Numeric)
+                        {
+                            sb.AppendLine();
+                            sb.AppendLine("    -- Hazards");
+                            var hazards = row[13].StringCellValue.Split(";", StringSplitOptions.RemoveEmptyEntries);
+
+                            foreach (var hazard in hazards)
                             {
-                                var hazardToUp = hazard.Replace("-", "").ToUpper().Trim();
-                                sb.AppendLine($"	v_result := hazard_rule.add_hazard(v_hazard_rule_id, v_attribute_id, ':1 = ''{hazardToUp}''', v_attribute_id, v_attribute_id, '{row[2]}', '', null);");
+                                if (hazard.Contains("-")) // THE HAZARD MUST CONTAIN THE - (DASH SYMBOL) IN THE TEMPLATE (ENUMERATION) values -- thats  COLUMN 14(row[13] in this case)
+                                {
+                                    var hazardToUp = hazard.Replace("-", "").ToUpper().Trim();
+                                    sb.AppendLine($"	v_result := hazard_rule.add_hazard(v_hazard_rule_id, v_attribute_id, ':1 = ''{hazardToUp}''', v_attribute_id, v_attribute_id, '{row[2]}', '', null);");
+                                }
                             }
                         }
                     }
@@ -193,11 +187,19 @@ namespace FileCreationTool.Services
             sb.AppendLine($"delete dform_array_names where object_type = 'df_{company}_{table}';");
             sb.AppendLine();
 
+            groupCount = 1;
+
             for (int k = 1; k < data.Count(); k++)
             {
-                var rows = data[k];
+                var row = data[k];
+                var attribute = row[6].ToString().Trim();
 
-                sb.AppendLine($"insert into dform_array_names (object_type, name, form_version) values ('df_{company}_{table}', '/df_{company}_{table}/{rows[6]}','dformv3');");
+                if (string.IsNullOrEmpty(attribute))
+                {
+                    attribute = $"groupby{groupCount++}";
+                }
+
+                sb.AppendLine($"insert into dform_array_names (object_type, name, form_version) values ('df_{company}_{table}', '/df_{company}_{table}/{attribute}','dformv3');");
             }
 
             sb.AppendLine();
@@ -214,7 +216,7 @@ namespace FileCreationTool.Services
             sb.AppendLine();
             sb.AppendLine($"commit;");
 
-            this.sQLFileCreationService.CreateSQLFile(@"C:\Users\ishopov\Desktop\FileCreationTool\FileCreationTool\GeneratedSql", sb, company, table);
+            this.sQLFileCreationService.CreateSQLFile($@"{filePath}\GeneratedTables", sb, company, table);
         }
     }
 }

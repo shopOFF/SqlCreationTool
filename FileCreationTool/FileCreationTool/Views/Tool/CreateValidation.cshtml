@@ -1,0 +1,30 @@
+﻿@model FileCreationTool.ViewModels.CompanyViewModel
+
+@{
+    ViewData["Title"] = "CreateValidation";
+}
+
+<h2>Create Validation SQL</h2>
+
+<br />
+
+@using (Html.BeginForm("CreateValidation", "Tool", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="CompanyName">Company Name</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" required="" id="CompanyName" name="CompanyName" value="" placeholder="CompanyName" style="width:400px; margin-left:15px;" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="TableName">Table Name</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" required="" id="TableName" name="TableName" value="" placeholder="TableName" style="width:400px; margin-left:15px;" />
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <input type="submit" value="Submit" title="Submit" class="btn btn-success" style="margin-top:25px;" />
+    </div>
+}
+

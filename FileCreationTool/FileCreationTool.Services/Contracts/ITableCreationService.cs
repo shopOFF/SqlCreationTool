@@ -5,8 +5,6 @@ namespace FileCreationTool.Services.Contracts
 {
     public interface ITableCreationService
     {
-        List<dynamic> ReadExcel(string filePath, string excelSheetName);
-
-        void CreateSQL(IList<dynamic> data, CompanyModel companyModel);
+        void CreateTableSQL(string filePath, IList<dynamic> data, CompanyModel companyModel);
     }
 }

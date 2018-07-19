@@ -7,9 +7,9 @@ namespace FileCreationTool.Services
 {
     public class SQLFileCreationService : ISQLFileCreationService
     {
-        public void CreateSQLFile(string path, StringBuilder sb, string company, string table)
+        public void CreateSQLFile(string filePath, StringBuilder sb, string company, string table)
         {
-            string fileName = $@"{path}\df_{company}_{table}.sql";
+            string fileName = $@"{filePath}\df_{company}_{table}.sql";
 
             try
             {

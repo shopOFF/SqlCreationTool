@@ -26,7 +26,9 @@ namespace FileCreationTool
         {
             services.AddTransient<ITableCreationService, TableCreationService>();
             services.AddTransient<IPackageCreationService, PackageCreationService>();
+            services.AddTransient<IValidationCreationService, ValidationCreationService>();
             services.AddTransient<ISQLFileCreationService, SQLFileCreationService>();
+            services.AddTransient<IReadExcelService, ReadExcelService>();
 
             services.AddMvc();
         }

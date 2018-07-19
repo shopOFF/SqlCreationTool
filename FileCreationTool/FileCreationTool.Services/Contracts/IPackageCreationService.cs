@@ -4,7 +4,7 @@ namespace FileCreationTool.Services.Contracts
 {
     public interface IPackageCreationService
     {
-        void CreatePackageBodies(CompanyModel viewModel);
-        void CreatePackages(CompanyModel viewModel);
+        void CreatePackageBodiesSQL(string filePath, CompanyModel viewModel);
+        void CreatePackagesSQL(string filePath, CompanyModel viewModel);
     }
 }
