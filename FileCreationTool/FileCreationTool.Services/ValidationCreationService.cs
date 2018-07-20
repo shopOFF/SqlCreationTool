@@ -28,7 +28,7 @@ namespace FileCreationTool.Services
             sb.AppendLine($"    v_attribute_id     number;");
             sb.AppendLine($"begin");
 
-            sb.AppendLine($"    delete validation_attributes where obj_attrs like '%df_{company}_{table}%'");
+            sb.AppendLine($"    delete validation_attributes where obj_attrs like '%df_{company}_{table}%';");
 
             for (int i = 1; i < data.Count; i++)
             {
