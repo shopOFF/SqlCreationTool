@@ -81,12 +81,12 @@ begin
     -- ***************************************************
     -- employeesfulltime
     select attribute_id into v_attribute_id from acs_attributes where object_type = 'df_qbe_homebusiness' and attribute_name = 'employeesfulltime';
-    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.', 'YES', 'Is required when Are there any full or part-time employees connected to the business  is Yes.');
+    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.employees', 'YES', 'Is required when Are there any full or part-time employees connected to the business is Yes.');
 
     -- ***************************************************
     -- employeesparttime
     select attribute_id into v_attribute_id from acs_attributes where object_type = 'df_qbe_homebusiness' and attribute_name = 'employeesparttime';
-    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.', 'YES', 'Is required when Are there any full or part-time employees connected to the business  is Yes.');
+    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.employees', 'YES', 'Is required when Are there any full or part-time employees connected to the business is Yes.');
 
     -- ***************************************************
     -- businessfood
@@ -96,7 +96,7 @@ begin
     -- ***************************************************
     -- commercialappliances
     select attribute_id into v_attribute_id from acs_attributes where object_type = 'df_qbe_homebusiness' and attribute_name = 'commercialappliances';
-    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.', 'YES', 'Is required when Does the business involve food services? =  is Yes.');
+    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.businessfood', 'YES', 'Is required when Does the business involve food services? is Yes.');
 
     -- ***************************************************
     -- commercialappliancesdesc
@@ -106,7 +106,7 @@ begin
     -- ***************************************************
     -- sprinklersystem
     select attribute_id into v_attribute_id from acs_attributes where object_type = 'df_qbe_homebusiness' and attribute_name = 'sprinklersystem';
-    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.', 'YES', 'Is required when Does the business involve food services? =  is Yes.');
+    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.businessfood', 'YES', 'Is required when Does the business involve food services? is Yes.');
 
     -- ***************************************************
     -- sprinklersystemdesc
@@ -116,12 +116,12 @@ begin
     -- ***************************************************
     -- ingredientslabeled
     select attribute_id into v_attribute_id from acs_attributes where object_type = 'df_qbe_homebusiness' and attribute_name = 'ingredientslabeled';
-    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.', 'YES', 'Is required when Does the business involve food services? =  is Yes.');
+    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.businessfood', 'YES', 'Is required when Does the business involve food services? is Yes.');
 
     -- ***************************************************
     -- foodareanotclean
     select attribute_id into v_attribute_id from acs_attributes where object_type = 'df_qbe_homebusiness' and attribute_name = 'foodareanotclean';
-    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.', 'YES', 'Is required when Does the business involve food services? =  is Yes.');
+    insert into validation_attributes (ATTRIBUTE_ID,FORMULA,OBJ_ATTRS,CHECK_VALUE,VALIDATION_DESCRIPTION) values(v_attribute_id, 'standard_validation.requiredpriorexplicit (:1, :2, :3, :4, :5, :6, :7)', 'df_qbe_homebusiness.businessfood', 'YES', 'Is required when Does the business involve food services? is Yes.');
 
     commit;
 end;

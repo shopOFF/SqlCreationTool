@@ -10,14 +10,14 @@ namespace FileCreationTool.Services
     public class ValidationCreationService : IValidationCreationService
     {
         private readonly ISQLFileCreationService sQLFileCreationService;
-        private IEnumerable<object> requiredSplit;
+       // private IEnumerable<object> requiredSplit;
 
         public ValidationCreationService(ISQLFileCreationService sQLFileCreationService)
         {
             this.sQLFileCreationService = sQLFileCreationService;
         }
 
-        public void CreateValidationSQL(string filePath, IList<dynamic> data, CompanyModel companyModel)
+        public string CreateValidationSQL(string filePath, IList<dynamic> data, CompanyModel companyModel)
         {
             var company = companyModel.CompanyName.ToLower();
             var table = companyModel.TableName.ToLower();
@@ -80,7 +80,7 @@ namespace FileCreationTool.Services
             sb.AppendLine($"end;");
             sb.AppendLine($"/");
 
-            this.sQLFileCreationService.CreateSQLFile($@"{filePath}\GeneratedValidation", sb, company, $"{table}-validation");
+            return sb.ToString();
         }
     }
 }

@@ -7,6 +7,6 @@ namespace FileCreationTool.Services.Contracts
 {
     public interface IValidationCreationService
     {
-        void CreateValidationSQL(string filePath, IList<dynamic> data, CompanyModel companyModel);
+        string CreateValidationSQL(string filePath, IList<dynamic> data, CompanyModel companyModel);
     }
 }

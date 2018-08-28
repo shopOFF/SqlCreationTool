@@ -16,7 +16,7 @@ namespace FileCreationTool.Services
             this.sQLFileCreationService = sQLFileCreationService;
         }
 
-        public void CreatePackagesSQL(string filePath, CompanyModel companyModel)
+        public string CreatePackagesSQL(string filePath, CompanyModel companyModel)
         {
             var company = companyModel.CompanyName.ToLower();
             var table = companyModel.TableName.ToLower();
@@ -42,10 +42,11 @@ namespace FileCreationTool.Services
             sb.AppendLine($"/");
             sb.AppendLine($"show errors;");
 
-            this.sQLFileCreationService.CreateSQLFile($@"{filePath}\GeneratedPackages\Packages", sb, company, table);
+            return sb.ToString();
+            
         }
 
-        public void CreatePackageBodiesSQL(string filePath, CompanyModel companyModel)
+        public string CreatePackageBodiesSQL(string filePath, CompanyModel companyModel)
         {
             var company = companyModel.CompanyName.ToLower();
             var table = companyModel.TableName.ToLower();
@@ -94,7 +95,7 @@ namespace FileCreationTool.Services
             sb.AppendLine($"/");
             sb.AppendLine($"show errors;");
 
-            this.sQLFileCreationService.CreateSQLFile($@"{filePath}\GeneratedPackages\PackageBodies", sb, company, table);
+            return sb.ToString();
         }
     }
 }

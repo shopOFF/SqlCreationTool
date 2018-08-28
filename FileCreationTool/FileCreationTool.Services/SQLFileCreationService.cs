@@ -7,7 +7,7 @@ namespace FileCreationTool.Services
 {
     public class SQLFileCreationService : ISQLFileCreationService
     {
-        public void CreateSQLFile(string filePath, StringBuilder sb, string company, string table)
+        public void CreateSQLFile(string filePath, string stringSQL, string company, string table)
         {
             string fileName = $@"{filePath}\df_{company}_{table}.sql";
 
@@ -23,13 +23,13 @@ namespace FileCreationTool.Services
                 using (FileStream fs = File.Create(fileName))
                 {
                     // Add some text to file
-                    Byte[] title = new UTF8Encoding(true).GetBytes(sb.ToString());
+                    Byte[] title = new UTF8Encoding(true).GetBytes(stringSQL.ToString());
                     fs.Write(title, 0, title.Length);
                 }
             }
             catch (Exception Ex)
             {
-                Console.WriteLine(Ex.ToString());
+                throw new ArgumentException($"The sql file cannot be created. {Ex.ToString()}");
             }
         }
     }

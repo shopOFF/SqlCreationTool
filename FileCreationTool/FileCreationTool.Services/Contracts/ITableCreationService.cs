@@ -1,10 +1,11 @@
 ﻿using FileCreationTool.Models;
 using System.Collections.Generic;
+using System.Text;
 
 namespace FileCreationTool.Services.Contracts
 {
     public interface ITableCreationService
     {
-        void CreateTableSQL(string filePath, IList<dynamic> data, CompanyModel companyModel);
+        string CreateTableSQL(string filePath, IList<dynamic> data, CompanyModel companyModel);
     }
 }
