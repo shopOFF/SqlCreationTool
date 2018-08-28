@@ -6,12 +6,13 @@ using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FileCreationTool.Services
 {
     public class ReadExcelService : IReadExcelService
     {
-        public List<dynamic> ReadExcel(string filePath, string excelSheetName)
+        public async Task<List<dynamic>> ReadExcel(string filePath, string excelSheetName)
         {
             XSSFWorkbook workbook;
 
@@ -31,7 +32,7 @@ namespace FileCreationTool.Services
                 }
             }
 
-            return list;
+            return await Task.FromResult(list);
         }
     }
 }

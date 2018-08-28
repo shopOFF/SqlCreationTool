@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FileCreationTool.Controllers
 {
@@ -36,14 +37,14 @@ namespace FileCreationTool.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(CompanyViewModel viewModel)
+        public async Task<IActionResult> Index(CompanyViewModel viewModel)
         {
             var companyModel = new CompanyModel() { CompanyName = viewModel.CompanyName, TableName = viewModel.TableName };
             var tableFirstToUpper = companyModel.TableName.First().ToString().ToUpper() + companyModel.TableName.Substring(1);
 
-            excelList = this.readExcelService.ReadExcel($@"{this.filePath}\Forms.xlsx", $"{tableFirstToUpper}");
+            excelList = await this.readExcelService.ReadExcel($@"{this.filePath}\Forms.xlsx", $"{tableFirstToUpper}");
 
-            var tableSQL = this.tableCreationService.CreateTableSQL(this.filePath, excelList, companyModel);
+            var tableSQL = tableCreationService.CreateTableSQL(this.filePath, excelList, companyModel);
             this.sQLFileCreationService.CreateSQLFile($@"{filePath}\GeneratedTables", tableSQL, companyModel.CompanyName, companyModel.TableName);
 
             return View();
@@ -75,14 +76,14 @@ namespace FileCreationTool.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateValidation(CompanyViewModel viewModel)
+        public async Task<IActionResult> CreateValidation(CompanyViewModel viewModel)
         {
             var companyModel = new CompanyModel() { CompanyName = viewModel.CompanyName, TableName = viewModel.TableName };
             var tableFirstToUpper = companyModel.TableName.First().ToString().ToUpper() + companyModel.TableName.Substring(1);
 
-            excelList = this.readExcelService.ReadExcel($@"{this.filePath}\Forms.xlsx", $"{tableFirstToUpper}");
+            excelList = await this.readExcelService.ReadExcel($@"{this.filePath}\Forms.xlsx", $"{tableFirstToUpper}");
 
-            var validationSQL= this.validationCreationService.CreateValidationSQL(this.filePath, excelList, companyModel);
+            var validationSQL = this.validationCreationService.CreateValidationSQL(this.filePath, excelList, companyModel);
             this.sQLFileCreationService.CreateSQLFile($@"{filePath}\GeneratedValidation", validationSQL, companyModel.CompanyName, $"{companyModel.TableName}-validation");
 
             return View();

@@ -1405,7 +1405,7 @@ begin
         table_name => '',
         column_name => 'northbrushdist',
         min_n_values => 0,
-        max_n_values => 200
+        max_n_values => 9999
     );
 
     insert into display_attributes
@@ -1558,7 +1558,7 @@ begin
         table_name => '',
         column_name => 'southbrushdist',
         min_n_values => 0,
-        max_n_values => 200
+        max_n_values => 9999
     );
 
     insert into display_attributes
@@ -1711,7 +1711,7 @@ begin
         table_name => '',
         column_name => 'eastbrushdist',
         min_n_values => 0,
-        max_n_values => 200
+        max_n_values => 9999
     );
 
     insert into display_attributes
@@ -1864,7 +1864,7 @@ begin
         table_name => '',
         column_name => 'westbrushdist',
         min_n_values => 0,
-        max_n_values => 200
+        max_n_values => 9999
     );
 
     insert into display_attributes
